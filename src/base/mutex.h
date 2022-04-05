@@ -9,7 +9,7 @@
 #include <cassert>
 #include <pthread.h>
 
-#include "current_thread.h"
+#include "platform_thread.h"
 #include "noncopyable.h"
 
 // thread safety annotations {
@@ -112,7 +112,15 @@ namespace base {
 class CAPABILITY("mutex") MutexLock {
  public:
   MutexLock()
-      : holder_(0) {}
+      : holder_(0) {
+    pthread_mutexattr_t mutexattr;
+
+    // Set the mutex as a recursive mutex
+    pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE_NP);
+
+    // create the mutex with the attributes set
+    pthread_mutex_init(&mutex_, &mutexattr);
+  }
 
   ~MutexLock() {
     assert(holder_ == 0);
@@ -120,7 +128,7 @@ class CAPABILITY("mutex") MutexLock {
   }
 
   bool isLockedByThisThread() const {
-    return holder_ == current_thread::tid();
+    return holder_ == PlatformThread::currentId();
   }
 
   void assertLocked() const ASSERT_CAPABILITY(this) {
@@ -150,7 +158,7 @@ class CAPABILITY("mutex") MutexLock {
   }
 
   void assignHolder() {
-    holder_ = current_thread::tid();
+    holder_ = PlatformThread::currentId();
   }
 
   pthread_mutex_t mutex_;

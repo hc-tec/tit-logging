@@ -4,9 +4,10 @@ project(tit_base)
 add_library(tit_base
         thread.cpp
         mutex.h
-        current_thread.cpp
         noncopyable.h
         atomic.h
+        platform_thread.cpp
+        timestamp.cpp
         )
 
 target_link_libraries(tit_base pthread rt)

@@ -7,39 +7,62 @@
 #define TIT_BASE_THREAD_H
 
 #include <pthread.h>
+
 #include <functional>
 #include <memory>
+#include <string>
 
 #include "atomic.h"
+#include "platform_thread.h"
+#include "mutex.h"
 
 namespace tit {
 
 namespace base {
 
-class Thread {
+class Thread : PlatformThread::Delegate {
  public:
-  typedef std::function<void()> ThreadFunc;
 
-  explicit Thread(ThreadFunc, const std::string& name = std::string());
-  ~Thread();
+  explicit Thread(const std::string& name = std::string());
+
+  Thread(const Thread&) = delete;
+  Thread& operator=(const Thread&) = delete;
+
+  ~Thread() override;
 
   void start();
   int join(); // return pthread_join()
 
-  bool started() const { return started_; }
+  bool isRunning() const {
+    MutexLockGuard guard(running_lock_);
+    return running_;
+  }
   pid_t tid() const { return tid_; }
   const std::string& name() const { return name_; }
 
   static int numCreated() { return numCreated_.get(); };
 
+  void threadMain() override;
+
+  pthread_t pthread() override;
+
+  bool isJoinable() override;
+
  private:
   void setDefaultName();
 
-  bool started_;
-  bool joined_;
-  pthread_t pthreadId_;
+  bool stopping_;
+
+  mutable MutexLock running_lock_;
+  bool running_ GUARDED_BY(running_lock_);
+
+  mutable MutexLock joinable_lock_;
+  bool joinable_ GUARDED_BY(joinable_lock_);
+
+  mutable MutexLock thread_lock_;
+  pthread_t pthreadId_ GUARDED_BY(thread_lock_);
+
   pid_t tid_;
-  ThreadFunc func_;
   std::string name_;
 
   static AtomicInt32 numCreated_;
