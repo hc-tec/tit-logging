@@ -5,6 +5,7 @@
 
 #include "platform_thread.h"
 
+#include <iostream>
 #include <cerrno>
 #include <linux/unistd.h>
 #include <unistd.h>
@@ -110,7 +111,7 @@ bool PlatformThread::create(PlatformThread::Delegate* delegate,
   pthread_attr_t attributes;
   memset(&attributes, 0, sizeof(attributes));
   pthread_attr_init(&attributes);
-  
+
   bool joinable = delegate->isJoinable();
 
   if (!joinable) {
@@ -127,8 +128,8 @@ bool PlatformThread::create(PlatformThread::Delegate* delegate,
   params->delegate = delegate;
   params->joinable = joinable;
 
-  pthread_t handle = delegate->pthread();
-  int err = pthread_create(&handle, &attributes, ThreadFunc, params.get());
+  pthread_t& handle = delegate->pthread();
+  int err = pthread_create(&handle, &attributes, &ThreadFunc, params.get());
   bool success = !err;
   if (success) {
     // ThreadParams should be deleted on the created thread after used.
@@ -144,6 +145,11 @@ bool PlatformThread::create(PlatformThread::Delegate* delegate,
 
   return success;
 }
+
+void PlatformThread::join(PlatformThread::Delegate* delegate) {
+  pthread_join(delegate->pthread(), nullptr);
+}
+
 
 }  // namespace base
 

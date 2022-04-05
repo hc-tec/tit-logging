@@ -12,13 +12,19 @@
 #include <memory>
 #include <string>
 
-#include "atomic.h"
+#include "atomic_int.h"
 #include "platform_thread.h"
 #include "mutex.h"
 
 namespace tit {
 
 namespace base {
+
+namespace {
+
+static AtomicInt32 numCreated_;
+
+}  // namespace
 
 class Thread : PlatformThread::Delegate {
  public:
@@ -30,8 +36,8 @@ class Thread : PlatformThread::Delegate {
 
   ~Thread() override;
 
-  void start();
-  int join(); // return pthread_join()
+  bool start();
+  void stop();
 
   bool isRunning() const {
     MutexLockGuard guard(running_lock_);
@@ -40,13 +46,17 @@ class Thread : PlatformThread::Delegate {
   pid_t tid() const { return tid_; }
   const std::string& name() const { return name_; }
 
-  static int numCreated() { return numCreated_.get(); };
+  static int numCreated() {
+    return numCreated_.incrementAndGet();
+  };
 
   void threadMain() override;
 
-  pthread_t pthread() override;
+  pthread_t& pthread() override;
 
   bool isJoinable() override;
+
+  void setJoinable(bool);
 
  private:
   void setDefaultName();
@@ -60,12 +70,10 @@ class Thread : PlatformThread::Delegate {
   bool joinable_ GUARDED_BY(joinable_lock_);
 
   mutable MutexLock thread_lock_;
-  pthread_t pthreadId_ GUARDED_BY(thread_lock_);
+  pthread_t pthread_ GUARDED_BY(thread_lock_);
 
   pid_t tid_;
   std::string name_;
-
-  static AtomicInt32 numCreated_;
 };
 
 }  // namespace base

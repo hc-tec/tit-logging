@@ -5,45 +5,46 @@
 
 #include "thread.h"
 
-#include <iostream>
-#include <utility>
-
 namespace tit {
 
 namespace base {
 
 
-void Thread::start()
+bool Thread::start()
 {
+
+  {
+      MutexLockGuard guard(running_lock_);
+      running_ = true;
+  }
+
   {
     MutexLockGuard guard(thread_lock_);
     bool success = PlatformThread::create(this);
+    if (!success) {
+      return false;
+    }
   }
+
+  return true;
 }
 
 Thread::Thread(const std::string& name)
     : stopping_(false),
       running_(false),
-      joinable_(false),
-      pthreadId_(kInvalidThreadId),
+      joinable_(true),
+      pthread_(kInvalidThreadId),
       tid_(0),
       name_(name) {
   setDefaultName();
 }
 
 Thread::~Thread() {
-//  if (running_ && !joined_) {
-//    pthread_detach(pthreadId_);
-//  }
-}
-
-int Thread::join() {
-//  joined_ = true;
-  return pthread_join(pthreadId_, nullptr);
+  stop();
 }
 
 void Thread::setDefaultName() {
-  int num = 1; // numCreated_.incrementAndGet();
+  int num = numCreated();
   if (name_.empty())
   {
     char buf[32];
@@ -51,18 +52,39 @@ void Thread::setDefaultName() {
     name_ = buf;
   }
 }
+
 void Thread::threadMain() {
-  std::cout  << "Running Thread" << std::endl;
+
 }
 
-pthread_t Thread::pthread() {
+pthread_t& Thread::pthread() {
   MutexLockGuard guard(thread_lock_);
-  return pthreadId_;
+  return pthread_;
 }
 
 bool Thread::isJoinable() {
   MutexLockGuard guard(joinable_lock_);
   return joinable_;
+}
+
+void Thread::stop() {
+
+  {
+    MutexLockGuard guard(thread_lock_);
+    if (!pthread_) return;
+  }
+
+  PlatformThread::join(this);
+
+  {
+    MutexLockGuard guard(running_lock_);
+    running_ = false;
+  }
+}
+
+void Thread::setJoinable(bool joinable) {
+  MutexLockGuard guard(joinable_lock_);
+  joinable_ = joinable;
 }
 
 }  // namespace base

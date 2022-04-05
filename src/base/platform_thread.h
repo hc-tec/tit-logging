@@ -43,7 +43,7 @@ class PlatformThread {
     virtual void threadMain() = 0;
 
     // get pthread_t when ready to start thread
-    virtual pthread_t pthread() = 0;
+    virtual pthread_t& pthread() = 0;
 
     virtual bool isJoinable() {
       return true;
@@ -63,6 +63,8 @@ class PlatformThread {
   static void setName(const char* name);
 
   static bool create(Delegate* delegate, size_t stack_size = 0);
+
+  static void join(Delegate* delegate);
 
 
 };
