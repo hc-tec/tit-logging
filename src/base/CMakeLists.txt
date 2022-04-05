@@ -5,7 +5,7 @@ add_library(tit_base
         thread.cpp
         mutex.h
         noncopyable.h
-        atomic.h
+        atomic_int.h
         platform_thread.cpp
         timestamp.cpp
         )

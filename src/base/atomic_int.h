@@ -16,9 +16,7 @@ template <typename T>
 class AtomicIntegerT {
  public:
   AtomicIntegerT()
-      : value_(0) {
-
-  }
+      : value_(0) {}
 
   T get()
   {
