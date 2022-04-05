@@ -3,14 +3,14 @@
 //
 // Author: Titto (2598772546@qq.com)
 
+#ifndef TIT_LOGGING_THREAD_H
+#define TIT_LOGGING_THREAD_H
 
-#include <iostream>
 
-#include "base/Thread.h"
+class Thread {
+public:
+ void start();
+};
 
-int main()
-{
-  Thread t;
-  t.start();
-  std::cout << "Hello World" << std::endl;
-}
+
+#endif //TIT_LOGGING_THREAD_H

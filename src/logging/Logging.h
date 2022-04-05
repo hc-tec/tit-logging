@@ -3,14 +3,9 @@
 //
 // Author: Titto (2598772546@qq.com)
 
+#ifndef TIT_LOGGING_LOGGING_H
+#define TIT_LOGGING_LOGGING_H
 
-#include <iostream>
+class Logging {};
 
-#include "base/Thread.h"
-
-int main()
-{
-  Thread t;
-  t.start();
-  std::cout << "Hello World" << std::endl;
-}
+#endif  // TIT_LOGGING_LOGGING_H

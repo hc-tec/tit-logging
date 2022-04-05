@@ -3,14 +3,11 @@
 //
 // Author: Titto (2598772546@qq.com)
 
+#include "Thread.h"
 
 #include <iostream>
 
-#include "base/Thread.h"
-
-int main()
+void Thread::start()
 {
-  Thread t;
-  t.start();
-  std::cout << "Hello World" << std::endl;
+    std::cout << "Thread Start";
 }
