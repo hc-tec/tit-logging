@@ -1,8 +1,13 @@
 
+project(tit_base)
 
-aux_source_directory(. base_SRCS)
-
-add_library(tit_base ${base_SRCS})
+add_library(tit_base
+        thread.cpp
+        mutex.h
+        current_thread.cpp
+        noncopyable.h
+        atomic.h
+        )
 
 target_link_libraries(tit_base pthread rt)
 

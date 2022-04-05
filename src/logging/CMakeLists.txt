@@ -1,8 +1,7 @@
+project(tit_logging)
 
-
-aux_source_directory(. logging_SRCS)
-
-add_library(tit_logging ${logging_SRCS})
+add_library(tit_logging
+        logging.cpp)
 
 target_link_libraries(tit_logging pthread rt)
 
