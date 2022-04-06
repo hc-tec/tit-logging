@@ -6,7 +6,7 @@
 #ifndef TIT_LOG_LOGGING_H
 #define TIT_LOG_LOGGING_H
 
-#include <ostream>
+#include <functional>
 
 #include "log_stream.h"
 
@@ -52,6 +52,38 @@ class Logging {
 
 };
 
+struct LogMessageInfo {
+
+  explicit LogMessageInfo(const char* const level,
+                          const char* const filename,
+                          const int& line,
+                          const int& thread_id)
+      : level_(level),
+        filename_(filename),
+        line_(line),
+        thread_id_(thread_id) {}
+
+  const char* const level_;
+  const char* const filename_;
+  const int &line_;
+  const int &thread_id_;
+//  const LogMessageTime& time;
+};
+
+
+typedef std::function<void(
+    LogStream& stream,
+    const LogMessageInfo& l,
+    void* data)>
+    CustomPrefixCallback;
+
+void InitTitLogging(const char* argv0);
+
+void InitTitLogging(const char* argv0,
+                    CustomPrefixCallback prefix_callback,
+                    void* prefix_callback_data);
+
+void ShutdownTitLogging();
 
 }  // namespace log
 

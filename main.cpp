@@ -25,7 +25,17 @@ void threadFunc() {
 
 int main() {
 
-  LOG(INFO) << "hello world" << '\n';
+  LOG(INFO) << "hello world";
+
+  LOG(WARN) << "hello world" << 1.2f;
+
+  LOG(ERROR) << "hello world" << " woqu";
+
+  LOG(DEBUG) << "hello world" << 99999;
+
+  LOG(TRACE) << "hello world" << 99999;
+
+  LOG(FATAL) << "hello world" << 99999;
 
 //  for (int i = 0; i < 100; ++i) {
 //    std::cout << i << " ";

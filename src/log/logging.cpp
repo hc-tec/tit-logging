@@ -8,13 +8,23 @@
 #include <sys/utsname.h>
 
 #include <iostream>
+#include <iomanip>
 
 #include "base/mutex.h"
 #include "base/noncopyable.h"
+#include "base/platform_thread.h"
 
 namespace tit {
 
 namespace log {
+
+// custom prefix
+namespace {
+  CustomPrefixCallback custom_prefix_callback = nullptr;
+  void* custom_prefix_callback_data = nullptr;
+}
+
+static const char* g_program_name = nullptr;
 
 const int MIN_LOG_LEVEL = 0;
 
@@ -94,6 +104,10 @@ class Logging::LogMessageData {
     return line_;
   }
 
+  void finish() {
+    stream_ << '\n';
+  }
+
  private:
 
   DISALLOW_COPY_AND_ASSIGN(LogMessageData);
@@ -117,6 +131,7 @@ Logging::Logging(const char* file, int line, int level) {
 }
 
 Logging::~Logging() {
+  data_->finish();
   Flush();
 }
 
@@ -124,6 +139,20 @@ void Logging::Init(const char* file, int line, int level) {
 
   data_ = new LogMessageData(file, line, level);
 
+  // user don't use custom prefix function
+  // so we use default one
+  if (custom_prefix_callback == nullptr) {
+    stream() << LogLevelName[level]
+             << "20220406-18:30:30"
+             << ' ' << PlatformThread::CurrentId()
+             << ' ' << data_->basename() << ':' << data_->line() << ' ';
+  } else {
+    custom_prefix_callback(
+        stream(),
+        LogMessageInfo(LogLevelName[level], data_->basename(), line, PlatformThread::CurrentId()),
+        custom_prefix_callback_data
+        );
+  }
 
 }
 LogStream& Logging::stream() { return data_->stream(); }
@@ -146,12 +175,26 @@ void Logging::Flush() {
 void Logging::SendToLog() {
   g_log_mutex.AssertLocked();
 
-//  std::cout << "Log is ready to write" << std::endl;
-
   const LogStream::Buffer& buffer(stream().buffer());
 
   fwrite(buffer.data(), 1, buffer.length(), stdout);
 
+}
+
+void InitTitLogging(const char* argv0) {
+  g_program_name = const_basename(argv0);
+}
+
+void InitTitLogging(const char* argv0,
+                    CustomPrefixCallback prefix_callback,
+                    void* prefix_callback_data) {
+  custom_prefix_callback = prefix_callback;
+  custom_prefix_callback_data = prefix_callback_data;
+  InitTitLogging(argv0);
+}
+
+void ShutdownTitLogging() {
+  g_program_name = nullptr;
 }
 
 }  // namespace log
