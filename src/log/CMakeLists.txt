@@ -2,7 +2,9 @@ project(tit_log)
 
 add_library(tit_log
         logging.cpp
-        log_stream.cpp)
+        log_stream.cpp
+        logger.cpp
+        log_destination.cpp)
 
 #target_link_libraries(tit_log)
 
