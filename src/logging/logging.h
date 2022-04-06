@@ -11,13 +11,13 @@ namespace tit {
 class Logging {
  public:
   enum LogLevel {
-    TRACE,
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR,
-    FATAL,
-    NUM_LEVELs,
+    kTrace,
+    kDebug,
+    kInfo,
+    kWarn,
+    kError,
+    kFatal,
+    kNumOfLevels,
   };
 };
 

@@ -66,12 +66,12 @@ void* ThreadFunc(void* params) {
     delegate = thread_params->delegate;
   }
 
-  delegate->threadMain();
+  delegate->ThreadMain();
 
   return nullptr;
 }
 
-pid_t PlatformThread::currentId() {
+pid_t PlatformThread::CurrentId() {
   static InitAtFork init_at_fork;
   if (g_thread_id == -1 ||
       (g_is_main_thread &&
@@ -92,7 +92,7 @@ pid_t PlatformThread::currentId() {
   return g_thread_id;
 }
 
-void PlatformThread::sleep(int64_t usec) {
+void PlatformThread::Sleep(int64_t usec) {
 
   struct timespec ts = { 0, 0 };
   ts.tv_sec = static_cast<time_t>(usec / Timestamp::kMicroSecondsPerSecond);
@@ -101,18 +101,18 @@ void PlatformThread::sleep(int64_t usec) {
 
 }
 
-const char* PlatformThread::getName() { return g_thread_name; }
+const char* PlatformThread::GetName() { return g_thread_name; }
 
-void PlatformThread::setName(const char* name) {
+void PlatformThread::SetName(const char* name) {
   g_thread_name = name;
 }
-bool PlatformThread::create(PlatformThread::Delegate* delegate,
+bool PlatformThread::Create(PlatformThread::Delegate* delegate,
                             size_t stack_size) {
   pthread_attr_t attributes;
   memset(&attributes, 0, sizeof(attributes));
   pthread_attr_init(&attributes);
 
-  bool joinable = delegate->isJoinable();
+  bool joinable = delegate->IsJoinable();
 
   if (!joinable) {
     pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_DETACHED);
@@ -146,7 +146,7 @@ bool PlatformThread::create(PlatformThread::Delegate* delegate,
   return success;
 }
 
-void PlatformThread::join(PlatformThread::Delegate* delegate) {
+void PlatformThread::Join(PlatformThread::Delegate* delegate) {
   pthread_join(delegate->pthread(), nullptr);
 }
 

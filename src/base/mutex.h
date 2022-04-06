@@ -127,25 +127,25 @@ class CAPABILITY("mutex") MutexLock {
     MCHECK(pthread_mutex_destroy(&mutex_));
   }
 
-  bool isLockedByThisThread() const {
-    return holder_ == PlatformThread::currentId();
+  bool IsLockedByThisThread() const {
+    return holder_ == PlatformThread::CurrentId();
   }
 
-  void assertLocked() const ASSERT_CAPABILITY(this) {
-    assert(isLockedByThisThread());
+  void AssertLocked() const ASSERT_CAPABILITY(this) {
+    assert(IsLockedByThisThread());
   }
 
-  void lock() ACQUIRE() {
+  void Lock() ACQUIRE() {
     MCHECK(pthread_mutex_lock(&mutex_));
-    assignHolder();
+    AssignHolder();
   }
 
-  void unlock() RELEASE() {
-    unassignHolder();
+  void UnLock() RELEASE() {
+    UnassignHolder();
     MCHECK(pthread_mutex_unlock(&mutex_));
   }
 
-  pthread_mutex_t* getPthreadMutex() /* non-const */ {
+  pthread_mutex_t* pthread_mutex() /* non-const */ {
     return &mutex_;
   }
 
@@ -153,12 +153,12 @@ class CAPABILITY("mutex") MutexLock {
 
   DISALLOW_COPY_AND_ASSIGN(MutexLock);
 
-  void unassignHolder() {
+  void UnassignHolder() {
     holder_ = 0;
   }
 
-  void assignHolder() {
-    holder_ = PlatformThread::currentId();
+  void AssignHolder() {
+    holder_ = PlatformThread::CurrentId();
   }
 
   pthread_mutex_t mutex_;
@@ -171,11 +171,11 @@ class SCOPED_CAPABILITY MutexLockGuard {
  public:
   explicit MutexLockGuard(MutexLock& mutex)
       : mutex_(mutex) {
-    mutex_.lock();
+    mutex_.Lock();
   }
 
   ~MutexLockGuard() RELEASE() {
-    mutex_.unlock();
+    mutex_.UnLock();
   }
 
  private:

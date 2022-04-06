@@ -6,11 +6,12 @@
 
 #include <iostream>
 
-#include "base/Thread.h"
+#include "base/thread.h"
+#include "base/mutex.h"
 
 int main()
 {
-  Thread t;
-  t.start();
+  tit::base::Thread t;
+  t.Start();
   std::cout << "Hello World" << std::endl;
 }

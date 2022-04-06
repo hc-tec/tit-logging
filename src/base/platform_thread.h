@@ -40,12 +40,12 @@ class PlatformThread {
   class Delegate {
    public:
     // ThreadMain method will be called on the newly created thread.
-    virtual void threadMain() = 0;
+    virtual void ThreadMain() = 0;
 
     // get pthread_t when ready to start thread
     virtual pthread_t& pthread() = 0;
 
-    virtual bool isJoinable() {
+    virtual bool IsJoinable() {
       return true;
     }
 
@@ -54,17 +54,17 @@ class PlatformThread {
 
   };
 
-  static pid_t currentId();
+  static pid_t CurrentId();
 
-  static void sleep(int64_t sec);
+  static void Sleep(int64_t sec);
 
-  static const char* getName();
+  static const char* GetName();
 
-  static void setName(const char* name);
+  static void SetName(const char* name);
 
-  static bool create(Delegate* delegate, size_t stack_size = 0);
+  static bool Create(Delegate* delegate, size_t stack_size = 0);
 
-  static void join(Delegate* delegate);
+  static void Join(Delegate* delegate);
 
 
 };

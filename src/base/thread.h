@@ -22,7 +22,7 @@ namespace base {
 
 namespace {
 
-static AtomicInt32 numCreated_;
+static AtomicInt32 num_created_;
 
 }  // namespace
 
@@ -36,30 +36,30 @@ class Thread : PlatformThread::Delegate {
 
   ~Thread() override;
 
-  bool start();
-  void stop();
+  bool Start();
+  void Stop();
 
-  bool isRunning() const {
+  bool IsRunning() const {
     MutexLockGuard guard(running_lock_);
     return running_;
   }
   pid_t tid() const { return tid_; }
   const std::string& name() const { return name_; }
 
-  static int numCreated() {
-    return numCreated_.incrementAndGet();
+  static int NumCreated() {
+    return num_created_.IncrementAndGet();
   };
 
-  void threadMain() override;
+  void ThreadMain() override;
 
   pthread_t& pthread() override;
 
-  bool isJoinable() override;
+  bool IsJoinable() override;
 
-  void setJoinable(bool);
+  void set_joinable(bool);
 
  private:
-  void setDefaultName();
+  void SetDefaultName();
 
   bool stopping_;
 
