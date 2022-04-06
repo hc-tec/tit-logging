@@ -5,6 +5,8 @@
 
 #include "thread.h"
 
+#include <utility>
+
 namespace tit {
 
 namespace base {
@@ -29,13 +31,14 @@ bool Thread::Start()
   return true;
 }
 
-Thread::Thread(const std::string& name)
+Thread::Thread(std::string name)
     : stopping_(false),
       running_(false),
       joinable_(true),
+      joined_(false),
       pthread_(kInvalidThreadId),
       tid_(0),
-      name_(name) {
+      name_(std::move(name)) {
   SetDefaultName();
 }
 
@@ -75,17 +78,27 @@ void Thread::Stop() {
     if (!pthread_) return;
   }
 
-  PlatformThread::Join(this);
-
   {
     MutexLockGuard guard(running_lock_);
     running_ = false;
   }
+
+  if (!joined_) {
+    PlatformThread::Destroy(pthread_);
+  }
+
 }
 
 void Thread::set_joinable(bool joinable) {
   MutexLockGuard guard(joinable_lock_);
   joinable_ = joinable;
+}
+
+int Thread::Join() {
+  assert(running_);
+  assert(!joined_);
+  joined_ = true;
+  return PlatformThread::Join(pthread_);;
 }
 
 }  // namespace base

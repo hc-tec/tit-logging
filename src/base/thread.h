@@ -26,10 +26,10 @@ static AtomicInt32 num_created_;
 
 }  // namespace
 
-class Thread : PlatformThread::Delegate {
+class Thread : public PlatformThread::Delegate {
  public:
 
-  explicit Thread(const std::string& name = std::string());
+  explicit Thread(std::string name = "");
 
   Thread(const Thread&) = delete;
   Thread& operator=(const Thread&) = delete;
@@ -59,7 +59,10 @@ class Thread : PlatformThread::Delegate {
 
   void set_joinable(bool);
 
+  int Join();
+
  private:
+
   void SetDefaultName();
 
   bool stopping_;
@@ -69,6 +72,8 @@ class Thread : PlatformThread::Delegate {
 
   mutable MutexLock joinable_lock_;
   bool joinable_ GUARDED_BY(joinable_lock_);
+
+  bool joined_;
 
   mutable MutexLock thread_lock_;
   pthread_t pthread_ GUARDED_BY(thread_lock_);

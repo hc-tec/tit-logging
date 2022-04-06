@@ -14,7 +14,6 @@ namespace tit {
 
 namespace base {
 
-
 class SimpleThread : public Thread {
  public:
 
@@ -22,9 +21,10 @@ class SimpleThread : public Thread {
 
   explicit SimpleThread(ThreadFunc, const std::string& = "");
 
-  void ThreadMain() final;
+  void ThreadMain() override;
 
  private:
+
   ThreadFunc func_;
 
 };

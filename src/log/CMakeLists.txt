@@ -1,7 +1,8 @@
 project(tit_logging)
 
 add_library(tit_logging
-        logging.cpp)
+        logging.cpp
+        LogStream.cpp)
 
 target_link_libraries(tit_logging pthread rt)
 

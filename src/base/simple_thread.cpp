@@ -18,7 +18,9 @@ SimpleThread::SimpleThread(
       Thread(name) {}
 
 void SimpleThread::ThreadMain() {
-  func_();
+  if (func_) {
+    func_();
+  }
 }
 
 }  // namespace base

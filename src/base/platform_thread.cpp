@@ -14,6 +14,7 @@
 #include <cstring>
 
 #include "timestamp.h"
+#include "simple_thread.h"
 
 namespace tit {
 
@@ -58,13 +59,13 @@ size_t GetDefaultThreadStackSize(const pthread_attr_t& attributes) {
 }
 
 void* ThreadFunc(void* params) {
-  PlatformThread::Delegate* delegate = nullptr;
 
-  {
-    std::unique_ptr<ThreadParams> thread_params(
-        static_cast<ThreadParams*>(params));
-    delegate = thread_params->delegate;
-  }
+//  std::unique_ptr<ThreadParams> thread_params(
+//      static_cast<ThreadParams*>(params));
+//  PlatformThread::Delegate* delegate = thread_params->delegate;
+
+  auto* delegate =
+    static_cast<PlatformThread::Delegate*>(params);
 
   delegate->ThreadMain();
 
@@ -129,7 +130,7 @@ bool PlatformThread::Create(PlatformThread::Delegate* delegate,
   params->joinable = joinable;
 
   pthread_t& handle = delegate->pthread();
-  int err = pthread_create(&handle, &attributes, &ThreadFunc, params.get());
+  int err = pthread_create(&handle, &attributes, &ThreadFunc, delegate);
   bool success = !err;
   if (success) {
     // ThreadParams should be deleted on the created thread after used.
@@ -146,10 +147,13 @@ bool PlatformThread::Create(PlatformThread::Delegate* delegate,
   return success;
 }
 
-void PlatformThread::Join(PlatformThread::Delegate* delegate) {
-  pthread_join(delegate->pthread(), nullptr);
+int PlatformThread::Join(pthread_t pthread) {
+  return pthread_join(pthread, nullptr);
 }
 
+int PlatformThread::Destroy(pthread_t pthread) {
+  return pthread_detach(pthread);
+}
 
 }  // namespace base
 

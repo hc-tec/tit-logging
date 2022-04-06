@@ -13,11 +13,12 @@ set(CXX_FLAGS
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-add_subdirectory(src/base)
-add_subdirectory(src/logging)
 
 include_directories(src)
+include_directories(${PROJECT_SOURCE_DIR})
 
+add_subdirectory(src/base)
+add_subdirectory(src/log)
 
 # just for test
 aux_source_directory(. DIR_SRCS)
@@ -26,6 +27,6 @@ add_executable(tit-logging ${DIR_SRCS})
 
 
 target_link_libraries(tit-logging
-        tit_logging # link tit_logging
+        tit_log # link tit_logging
         tit_base
         )

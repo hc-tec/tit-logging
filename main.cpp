@@ -7,12 +7,15 @@
 #include <iostream>
 
 #include <functional>
+#include <vector>
 
 #include "base/thread.h"
 #include "base/simple_thread.h"
 #include "base/mutex.h"
 
-void ThreadFunc() {
+
+
+void threadFunc() {
   for (int i = 0; i < 10; ++i) {
     std::cout << i << " ";
   }
@@ -20,7 +23,12 @@ void ThreadFunc() {
 }
 
 int main() {
-  tit::base::SimpleThread t(ThreadFunc);
-  t.Start();
+
+  for (int i = 0; i < 100; ++i) {
+    std::cout << i << " ";
+    tit::base::SimpleThread t(threadFunc);
+    t.Start();
+    t.Join();
+  }
   std::cout << "Hello World" << std::endl;
 }

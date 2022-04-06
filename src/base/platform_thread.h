@@ -63,8 +63,9 @@ class PlatformThread {
 
   static bool Create(Delegate* delegate, size_t stack_size = 0);
 
-  static void Join(Delegate* delegate);
+  static int Join(pthread_t pthread);
 
+  static int Destroy(pthread_t pthread);
 
 };
 

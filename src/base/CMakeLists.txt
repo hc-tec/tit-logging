@@ -9,6 +9,7 @@ add_library(tit_base
         platform_thread.cpp
         timestamp.cpp
         simple_thread.cpp
+        types.h
         )
 
 target_link_libraries(tit_base pthread rt)
