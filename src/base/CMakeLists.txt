@@ -8,6 +8,7 @@ add_library(tit_base
         atomic_int.h
         platform_thread.cpp
         timestamp.cpp
+        simple_thread.cpp
         )
 
 target_link_libraries(tit_base pthread rt)

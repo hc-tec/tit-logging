@@ -43,6 +43,7 @@ class Thread : PlatformThread::Delegate {
     MutexLockGuard guard(running_lock_);
     return running_;
   }
+
   pid_t tid() const { return tid_; }
   const std::string& name() const { return name_; }
 

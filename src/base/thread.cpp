@@ -40,6 +40,7 @@ Thread::Thread(const std::string& name)
 }
 
 Thread::~Thread() {
+  if(!IsRunning() || !IsJoinable()) return;
   Stop();
 }
 

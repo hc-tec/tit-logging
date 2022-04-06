@@ -6,12 +6,21 @@
 
 #include <iostream>
 
+#include <functional>
+
 #include "base/thread.h"
+#include "base/simple_thread.h"
 #include "base/mutex.h"
 
-int main()
-{
-  tit::base::Thread t;
+void ThreadFunc() {
+  for (int i = 0; i < 10; ++i) {
+    std::cout << i << " ";
+  }
+  std::cout << std::endl;
+}
+
+int main() {
+  tit::base::SimpleThread t(ThreadFunc);
   t.Start();
   std::cout << "Hello World" << std::endl;
 }

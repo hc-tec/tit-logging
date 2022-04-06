@@ -17,7 +17,6 @@ namespace base {
 
 extern __thread pid_t g_thread_id;
 extern __thread const char* g_thread_name;
-//extern __thread int g_name_len;
 extern std::atomic<bool> g_main_thread_tid_cache_valid;
 extern bool g_is_main_thread;
 
