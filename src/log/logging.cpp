@@ -146,7 +146,11 @@ void Logging::Flush() {
 void Logging::SendToLog() {
   g_log_mutex.AssertLocked();
 
-  std::cout << "Log is ready to write" << std::endl;
+//  std::cout << "Log is ready to write" << std::endl;
+
+  const LogStream::Buffer& buffer(stream().buffer());
+
+  fwrite(buffer.data(), 1, buffer.length(), stdout);
 
 }
 

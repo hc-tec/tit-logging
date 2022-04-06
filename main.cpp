@@ -13,6 +13,7 @@
 #include "base/simple_thread.h"
 #include "base/mutex.h"
 
+#include "log/logging.h"
 
 
 void threadFunc() {
@@ -24,11 +25,13 @@ void threadFunc() {
 
 int main() {
 
-  for (int i = 0; i < 100; ++i) {
-    std::cout << i << " ";
-    tit::base::SimpleThread t(threadFunc);
-    t.Start();
-    t.Join();
-  }
-  std::cout << "Hello World" << std::endl;
+  LOG(INFO) << "hello world" << '\n';
+
+//  for (int i = 0; i < 100; ++i) {
+//    std::cout << i << " ";
+//    tit::base::SimpleThread t(threadFunc);
+//    t.Start();
+//    t.Join();
+//  }
+//  std::cout << "Hello World" << std::endl;
 }

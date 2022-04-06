@@ -25,6 +25,7 @@ template<int SIZE>
 class FixedBuffer
 {
  public:
+
   FixedBuffer()
       : cur_(data_)
   {
@@ -76,9 +77,10 @@ class FixedBuffer
 
 class LogStream {
   typedef LogStream self;
-  typedef FixedBuffer<kSmallBuffer> Buffer;
 
  public:
+
+  typedef FixedBuffer<kSmallBuffer> Buffer;
 
   self& operator<<(bool v)
   {
@@ -147,6 +149,8 @@ class LogStream {
     }
     return *this;
   }
+
+
 
  private:
   template<typename T>
