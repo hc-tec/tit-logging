@@ -84,7 +84,7 @@ void Thread::Stop() {
   }
 
   if (!joined_) {
-    PlatformThread::Destroy(pthread_);
+    PlatformThread::Detach(pthread_);
   }
 
 }
@@ -99,6 +99,10 @@ int Thread::Join() {
   assert(!joined_);
   joined_ = true;
   return PlatformThread::Join(pthread_);;
+}
+
+int Thread::Detach() {
+  return PlatformThread::Detach(pthread_);
 }
 
 }  // namespace base

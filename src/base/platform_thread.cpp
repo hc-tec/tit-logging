@@ -151,7 +151,7 @@ int PlatformThread::Join(pthread_t pthread) {
   return pthread_join(pthread, nullptr);
 }
 
-int PlatformThread::Destroy(pthread_t pthread) {
+int PlatformThread::Detach(pthread_t pthread) {
   return pthread_detach(pthread);
 }
 
