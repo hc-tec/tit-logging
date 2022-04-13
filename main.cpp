@@ -29,7 +29,7 @@ int main() {
 //
 //  LOG(WARN) << "hello world" << 1.2f;
 //
-//  LOG(ERROR) << "hello world" << " woqu";
+  LOG(ERROR) << "hello world" << " woqu";
 //
 //  LOG(DEBUG) << "hello world" << 99999;
 //
@@ -41,7 +41,7 @@ int main() {
     std::cout << i << " ";
     tit::base::SimpleThread t(threadFunc);
     t.Start();
-//    t.Join();
+    t.Join();
   }
 //  std::cout << "Hello World" << std::endl;
 }

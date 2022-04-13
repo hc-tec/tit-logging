@@ -145,7 +145,7 @@ void Logging::Init(const char* file, int line, int level) {
     stream() << LogLevelName[level]
              << "20220406-18:30:30"
              << ' ' << PlatformThread::CurrentId()
-             << ' ' << data_->basename() << ':' << data_->line() << ' ';
+             << ' ' << data_->fullname() << ':' << data_->line() << ' ';
   } else {
     custom_prefix_callback(
         stream(),
