@@ -10,6 +10,8 @@ add_library(tit_base
         timestamp.cpp
         simple_thread.cpp
         types.h
+        process.h
+        process.cpp
         )
 
 target_link_libraries(tit_base pthread rt)
