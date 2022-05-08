@@ -149,7 +149,11 @@ void Logging::Init(const char* file, int line, int level) {
   } else {
     custom_prefix_callback(
         stream(),
-        LogMessageInfo(LogLevelName[level], data_->basename(), line, PlatformThread::CurrentId()),
+        LogMessageInfo(LogLevelName[level],
+                       data_->fullname(),
+                       data_->basename(),
+                       line,
+                       PlatformThread::CurrentId()),
         custom_prefix_callback_data
         );
   }
